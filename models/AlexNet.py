@@ -37,6 +37,7 @@ class LRN(nn.Module):
         return x
 
 # 共有１６个参数(加上bias参数)
+# 按照torchvision.models.alexnet来构建模型
 class AlexNet(nn.Module):
     def __init__(self, num_classes = 2): # 默认为两类，猫和狗
 #         super().__init__() # python3
@@ -44,27 +45,27 @@ class AlexNet(nn.Module):
         # 开始构建AlexNet网络模型，5层卷积，3层全连接层
         # 5层卷积层
         self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=96, kernel_size=11, stride=4),
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=11, stride=4, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
             LRN(local_size=5, bias=1, alpha=1e-4, beta=0.75, ACROSS_CHANNELS=True)
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2d(in_channels=96, out_channels=256, kernel_size=5, groups=2, padding=2),
+            nn.Conv2d(in_channels=64, out_channels=192, kernel_size=5, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
             LRN(local_size=5, bias=1, alpha=1e-4, beta=0.75, ACROSS_CHANNELS=True)
         )
         self.conv3 = nn.Sequential(
-            nn.Conv2d(in_channels=256, out_channels=384, kernel_size=3, padding=1),
+            nn.Conv2d(in_channels=192, out_channels=384, kernel_size=3, padding=1),
             nn.ReLU(inplace=True)
         )
         self.conv4 = nn.Sequential(
-            nn.Conv2d(in_channels=384, out_channels=384, kernel_size=3, padding=1),
+            nn.Conv2d(in_channels=384, out_channels=256, kernel_size=3, padding=1),
             nn.ReLU(inplace=True)
         )
         self.conv5 = nn.Sequential(
-            nn.Conv2d(in_channels=384, out_channels=256, kernel_size=3, padding=1),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2)
         )
@@ -84,7 +85,7 @@ class AlexNet(nn.Module):
         
     def forward(self, x):
         x = self.conv5(self.conv4(self.conv3(self.conv2(self.conv1(x)))))
-        x = x.view(-1, 6*6*256)
+        x = x.view(x.size(0), 6*6*256)
         x = self.fc8(self.fc7(self.fc6(x)))
         return x
 

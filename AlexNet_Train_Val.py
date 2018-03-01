@@ -7,10 +7,11 @@ from torch.autograd import Variable
 from torch.nn import functional as F
 import utils.dataset as dataset
 import torchvision
+import math
 
 use_gpu = torch.cuda.is_available()
 
-def test(model, test_loader)
+def test(model, test_loader):
     model.eval()
     correct = 0
     total = 0
@@ -33,12 +34,12 @@ def train_batch(model, optimizer, batch, label):
     criterion(output, Variable(label)).backward() 
     optimizer.step()
 
-def train_epoch(model, optimizer=None, train_loader):
+def train_epoch(model, train_loader, optimizer=None):
     for batch, label in train_loader:
         train_batch(model, optimizer, batch.cuda(), label.cuda())
 
 # 训练一个epoch,测试一次
-def train_test(model, optimizer=None, train_loader, test_loader, epoches=10):
+def train_test(model, train_loader, test_loader, optimizer=None, epoches=10):
     print("Start training.")
     model.train()
     if optimizer is None:
@@ -46,7 +47,7 @@ def train_test(model, optimizer=None, train_loader, test_loader, epoches=10):
 
     for i in range(epoches):
         print("Epoch: ", i)
-        train_epoch(model, optimizer, train_loader)
+        train_epoch(model, train_loader, optimizer)
         test(model, test_loader)
     print("Finished training.")
 
@@ -75,5 +76,5 @@ if __name__ == "__main__":
     test_loader = dataset.test_loader(path, batch_size=1, num_workers=4, pin_memory=True)
 
     model.apply(weight_init) # 初始化参数
-    train_test(model, optimizer=None, train_loader, test_loader, epoches=5)
+    train_test(model, train_loader, test_loader, optimizer=None, epoches=5)
 

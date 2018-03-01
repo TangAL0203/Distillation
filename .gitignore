@@ -1,0 +1,5 @@
+data/*.jpg
+data/train/dog/*.jpg
+data/train/cat/*.jpg
+data/test/dog/*.jpg
+data/test/cat/*.jpg

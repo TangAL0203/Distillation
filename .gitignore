@@ -1,3 +1,4 @@
+models/*.pth
 data/
 data/*.jpg
 data/train/dog/*.jpg

@@ -14,11 +14,11 @@ import getpass
 if getpass.getuser() == 'tsq':
     train_batch_size = 8
 else:
-    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
     train_batch_size = 32
 
-num_batches = 0
 use_gpu = torch.cuda.is_available()
+num_batches = 0
 
 def test(model, test_loader):
     model.eval()
@@ -112,10 +112,40 @@ if __name__ == "__main__":
         print("Use GPU!")
     else:
         print("Use CPU!")
-    path = "./data/train"
-    train_loader = dataset.train_loader(path, batch_size=train_batch_size, num_workers=4, pin_memory=True)
-    test_loader = dataset.test_loader(path, batch_size=1, num_workers=4, pin_memory=True)
+    root = "./data/train"
+    train_loader = dataset.train_loader(root, batch_size=train_batch_size, num_workers=4, pin_memory=True)
+    test_loader = dataset.test_loader(root, batch_size=1, num_workers=4, pin_memory=True)
 
     # model.apply(weight_init) # 初始化参数
     train_test(model, train_loader, test_loader, optimizer=None, epoches=5)
+    # save model
+    save_type = 1
+    save_path = '/home/smiles/Distillation/models/AlexNet1.pth'
+    # 方式一： 只保存参数
+    # 方式二： 保存整个模型(模型结构和模型参数)
+    if save_type == 1:
+        torch.save(model.state_dict(), save_path)
+    elif save_type == 2:
+        save_path = '/home/smiles/Distillation/models/AlexNet1.pth'
+        torch.save(model, save_path)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

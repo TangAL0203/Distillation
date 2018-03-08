@@ -187,7 +187,7 @@ def save_best_checkpoint(state, is_best=False, filename='checkpoint.pth.tar'):
     torch.save(state, filename)
     if is_best:
         shutil.copyfile(filename, args.arch+'_'+args.data_name+'_'+str(best_prec1)+'.pth') # Copy the contents of the file to another file
-
+        os.remove(filename)
 
 local_weights = False
 

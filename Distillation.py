@@ -28,29 +28,28 @@ class T_Softmax(nn.Module):
         else:
             self.dim = dim
         self.T = T # temperature
-    
-    def __setstate__(self, state):
-        self.__dict__.update(state)
-        if not hasattr(self, 'dim'):
-            self.dim = None
 
     def forward(self, input):
-        input.div_(self.T)
-        input_tensor = input.data
-        input_tensor = torch.pow(math.e, input_tensor)
+        temp = torch.div(input, self.T)
+        temp_exp = torch.exp(temp)
         
         if self.dim == 0:
-            sum_ex = input_tensor.sum(dim=1).repeat(input_tensor.shape[1],1).t()
+            sum_exp = temp_exp.sum(dim=1).repeat(temp_exp.shape[1],1).t()
+            out = torch.div(temp_exp, sum_exp)
         else:
-            sum_ex = input_tensor.sum(dim=0).repeat(1,input_tensor.shape[0]).t()
+            sum_exp = temp_exp.sum(dim=0).repeat(1,temp_exp.shape[0]).t()
+            out = torch.div(temp_exp, sum_exp)
 
-        input_tensor = torch.div(input_tensor,sum_ex)
-        input.data = input_tensor
-    
-        return input
+        return out
 
-    def __repr__(self):
-        return self.__class__.__name__ + '()'
+# define distillation loss function
+def distillation_loss(nn.Module):
+    r'''
+    Distillation loss as flows:
+    loss = w1*loss1 + w2*loss2
+    loss1 = T_Softmax.
+    '''
+
 
 
 

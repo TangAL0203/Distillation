@@ -131,6 +131,7 @@ def get_single_img(root, path, train=True):
     if transform is not None:
         img = transform(img)
     
+    img = img.unsqueeze(dim=0)
     for target in sorted(os.listdir(root)):
         if target in path:
             label = class_to_idx[target]

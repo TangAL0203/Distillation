@@ -1,4 +1,11 @@
 models/*.pth
+*.pyc
+models/*.pyc
+utils/*.pyc
+data
+log
+*.pth
+models/*.tar
 data/*.jpg
 data/train/dog/*.jpg
 data/train/cat/*.jpg

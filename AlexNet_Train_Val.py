@@ -36,7 +36,7 @@ def test(model, test_loader):
     model.train()
 
 def train_batch(model, optimizer, batch, label): 
-    model.zero_grad() # 
+    optimizer.zero_grad() # 
     input = Variable(batch)
     output = model(input)
     criterion = torch.nn.CrossEntropyLoss()
@@ -49,7 +49,7 @@ def train_epoch(model, train_loader, optimizer=None):
     for batch, label in train_loader:
         loss = train_batch(model, optimizer, batch.cuda(), label.cuda())
         if num_batches%50 == 0:
-            print("the {}th batch, loss is: {}".format(num_batches, loss[0]))
+            print('%23s%-9s%-13s'%('the '+str(num_batches)+'th batch, ','loss is: ',str(round(loss[0],8))))
         num_batches +=1
 
 # 训练一个epoch,测试一次
@@ -128,6 +128,16 @@ if __name__ == "__main__":
     elif save_type == 2:
         save_path = '/home/smiles/Distillation/models/AlexNet1.pth'
         torch.save(model, save_path)
+
+
+
+#　论文提到，乘以Ｔ^2，损失函数的梯度就与T无关。(公式4有提到)
+#　　teacher_output部分设置为.detach()，这样就不会计算梯度值。相当于这里的KL散度就等于计算P和Q的交叉熵了。(两者相差一个H(P))
+
+
+
+
+
 
 
 
